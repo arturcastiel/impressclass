@@ -8,11 +8,9 @@ class Heights:
           - a,b and c are the plane normal vector coordinates wich are computed
         as the vetorial product between two plane vectors
           - d can be computed as the negative of scalar product between the
-        normal vector and a point "inside" the plane'''
-        n = np.cross((nodes_coords[1] - nodes_coords[0]),\
-                     (nodes_coords[2]-nodes_coords[0]))
-        a,b,c = n
-        d = -np.dot(n,nodes_coords[0])
+        normal vector and a point inside the plane'''
+        a,b,c  = M.faces.normal[:]
+        d = -np.dot(M.faces.normal[:],nodes_coords[0])
         return a,b,c,d
 
     def getHeights(M,facesID):
