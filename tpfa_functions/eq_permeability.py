@@ -60,21 +60,30 @@ def k_eq(hb, hi, all_faces, internal_faces, b_faces, u_normal, adjacencies_inter
     output:
         keq: permeabilidade equivalente de all_faces
     '''
-    pdb.set_trace()
+
     keq = np.zeros(len(all_faces))
 
     ids0 = adjacencies_internal_faces[:, 0]
     ids1 = adjacencies_internal_faces[:, 1]
-    unit_normal_internal_faces = u_normal[internal_faces]
+    unit_normal_internal_faces = np.absolute(u_normal[internal_faces])
 
-    k0 = perms[ids0]
-    k1 = perms[ids1]
+    ni = len(internal_faces)
+    k00 = get_perm_proj(perms[ids0].reshape([ni, 3, 3]), unit_normal_internal_faces)
+    k11 = get_perm_proj(perms[ids1].reshape([ni, 3, 3]), unit_normal_internal_faces)
 
+    keq[internal_faces] = hi.sum(axis=1)/(hi[:, 0]/k00 + hi[:, 1]/k11)
 
-
-    kf0_0 = k0[:, 0] * unit_normal_internal_faces[:,0] + k0[:, 1] * unit_normal_internal_faces[:,1] + k0[:, 2] * unit_normal_internal_faces[:,2]
-
-
-
+    idsb = adjacencies_boundary_faces.flatten()
+    unit_normal_b_faces = np.absolute(u_normal[b_faces])
+    nb = len(b_faces)
+    keq[b_faces] = get_perm_proj(perms[idsb].reshape([nb, 3, 3]), unit_normal_b_faces)
 
     return keq
+
+def get_perm_proj(perms, unit_vectors):
+    k0 = perms
+
+    kf0 = (k0[:, 0, :]*unit_vectors).sum(axis=1)
+    kf1 = (k0[:, 1, :]*unit_vectors).sum(axis=1)
+    kf2 = (k0[:, 2, :]*unit_vectors).sum(axis=1)
+    return (np.array([kf0, kf1, kf2]).T*unit_vectors).sum(axis=1)
