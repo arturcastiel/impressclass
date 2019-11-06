@@ -41,10 +41,12 @@ class tpfaScheme(object):
         return T,Q
 
 if __name__ == '__main__':
+
+    import time
     from impress.preprocessor.meshHandle.finescaleMesh import FineScaleMesh as msh
-    import timeit
 
     name_mesh = 'mesh/27x27x27.msh'
+    # name_mesh = 'mesh/45x45x45.msh'
     dim = 3
     M = msh(name_mesh, dim=dim)
     M.permeability[:] = [10., 0., 0., 0., 5.0, 0., 0., 0., 2]
@@ -54,6 +56,5 @@ if __name__ == '__main__':
     m1.hi = hi
     hb = np.ones([len(M.faces.boundary), 1], dtype=np.float64)
     m1.hb = hb
+    t0 = time.time()
     keq = m1.compute_eq_permeability()
-
-    pdb.set_trace()
