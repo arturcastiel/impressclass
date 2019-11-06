@@ -1,0 +1,6 @@
+*_ttt.py
+testting/
+impress/
+*.msh
+!27x27x27.msh
+*__pycache__
