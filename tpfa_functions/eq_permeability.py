@@ -70,7 +70,6 @@ def k_eq(hb, hi, all_faces, internal_faces, b_faces, u_normal, adjacencies_inter
     ni = len(internal_faces)
     k00 = get_perm_proj(perms[ids0].reshape([ni, 3, 3]), unit_normal_internal_faces)
     k11 = get_perm_proj(perms[ids1].reshape([ni, 3, 3]), unit_normal_internal_faces)
-
     keq[internal_faces] = hi.sum(axis=1)/(hi[:, 0]/k00 + hi[:, 1]/k11)
 
     idsb = adjacencies_boundary_faces.flatten()
@@ -81,9 +80,16 @@ def k_eq(hb, hi, all_faces, internal_faces, b_faces, u_normal, adjacencies_inter
     return keq
 
 def get_perm_proj(perms, unit_vectors):
-    k0 = perms
+    '''
+    obtem a permeabilidade projetada na face
+    input:
+        perms: permeabilidade dos volumes
+        unit_vectors: vetor normal unitario das faces
+    output:
+        permeabilidade projetada
+    '''
 
-    kf0 = (k0[:, 0, :]*unit_vectors).sum(axis=1)
-    kf1 = (k0[:, 1, :]*unit_vectors).sum(axis=1)
-    kf2 = (k0[:, 2, :]*unit_vectors).sum(axis=1)
+    kf0 = (perms[:, 0, :]*unit_vectors).sum(axis=1)
+    kf1 = (perms[:, 1, :]*unit_vectors).sum(axis=1)
+    kf2 = (perms[:, 2, :]*unit_vectors).sum(axis=1)
     return (np.array([kf0, kf1, kf2]).T*unit_vectors).sum(axis=1)
