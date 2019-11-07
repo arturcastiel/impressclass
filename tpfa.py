@@ -4,8 +4,8 @@ import pdb
 class tpfaScheme(object):
     def __init__(self, mesh):
         self.mesh = mesh
-        # self.hb, self.hi = self.compute_heights()
-        # self.k_eq = self.compute_eq_permeability()
+        self.hb, self.hi = self.compute_heights()
+        self.k_eq = self.compute_eq_permeability()
 
     def __call__(self):
         self.run()
@@ -39,25 +39,3 @@ class tpfaScheme(object):
     def assembly_tpfa(self):
 
         return T,Q
-
-if __name__ == '__main__':
-
-    from impress.preprocessor.meshHandle.finescaleMesh import FineScaleMesh as msh
-    import time
-
-    name_mesh = 'mesh/27x27x27.msh'
-    # name_mesh = 'mesh/45x45x45.msh'
-    dim = 3
-    M = msh(name_mesh, dim=dim)
-    M.permeability[:] = [10., 0., 0., 0., 5.0, 0., 0., 0., 2.0]
-
-    m1 = tpfaScheme(M)
-    hi = np.ones([len(M.faces.internal), 2], dtype = np.float64)
-    m1.hi = hi
-    hb = np.ones([len(M.faces.boundary), 1], dtype=np.float64)
-    m1.hb = hb
-    t0 = time.time()
-    keq = m1.compute_eq_permeability()
-    t1 = time.time()
-
-    pdb.set_trace()
