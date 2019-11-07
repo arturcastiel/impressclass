@@ -4,3 +4,5 @@ impress/
 *.msh
 !27x27x27.msh
 *__pycache__
+mesh/
+input_cards/
