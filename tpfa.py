@@ -50,13 +50,8 @@ class tpfaScheme(object):
             permeabilidade projetada
         '''
 
-        tt = np.zeros(perms.shape)
-        tt[:, 0, :] = unit_vectors
-        tt[:, 1, :] = unit_vectors
-        tt[:, 2, :] = unit_vectors
-        tt = perms*tt
+        tt = perms*unit_vectors.reshape([len(unit_vectors), 1, 3])
         return tt.sum(axis=2).sum(axis=1)
-
 
     def assembly_tpfa(self):
 
