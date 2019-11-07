@@ -14,13 +14,13 @@ class tpfaScheme(object):
         self.T, self.Q = self.assembly_tpfa()
 
     def getHeights(self,facesID):
-        faces_nodesID = self.M.faces.connectivities[facesID[:]] #return the nodes global ID
-        adjacents_volumesID = self.M.faces.bridge_adjacencies(facesID[:],2,3)
-        volume_center_coords = self.M.volumes.center(M.volumes())
+        faces_nodesID = self.mesh.faces.connectivities[facesID[:]] #return the nodes global ID
+        adjacents_volumesID = self.mesh.faces.bridge_adjacencies(facesID[:],2,3)
+        volume_center_coords = self.mesh.volumes.center(M.volumes())
         adjacents_volumes_coords = volume_center_coords[adjacents_volumesID[:,:]]
 
-        face_nodes_coords = self.M.nodes.coords[faces_nodesID[:,0]] #one is enough
-        normal_vector = self.M.faces.normal[facesID]
+        face_nodes_coords = self.mesh.nodes.coords[faces_nodesID[:,0]] #one is enough
+        normal_vector = self.mesh.faces.normal[facesID]
         normal_vector_modulus = np.linalg.norm(normal_vector,axis=1)
         d_coefficient = -(normal_vector*face_nodes_coords).sum(axis=1) # from the plane equation (a*x+b*y+c*z+d = 0)
 
@@ -39,8 +39,8 @@ class tpfaScheme(object):
     def compute_heights(self):
         internal_facesID = self.mesh.faces.internal[:]
         boundary_facesID = self.mesh.faces.boundary[:]
-        internal_heights = Heights.getHeights(self,internal_facesID)
-        boundary_heights = Heights.getHeights(self,boundary_facesID)
+        internal_heights = self.getHeights(self,internal_facesID)
+        boundary_heights = self.getHeights(self,boundary_facesID)
         return boundary_heights, internal_heights
 
     def compute_eq_permeability(self):

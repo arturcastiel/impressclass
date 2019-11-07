@@ -31,8 +31,8 @@ def compute_heights(self):
     M = self.mesh
     internal_facesID = M.faces.internal[:]
     boundary_facesID = M.faces.boundary[:]
-    internal_heights = Heights.getHeights(M,internal_facesID)
-    boundary_heights = Heights.getHeights(M,boundary_facesID)
+    internal_heights = getHeights(M,internal_facesID)
+    boundary_heights = getHeights(M,boundary_facesID)
 
     return boundary_heights, internal_heights
 #a*coords_vol[:,0]+b*coords_vol[:,1]+c*coords_vol[:,2]
