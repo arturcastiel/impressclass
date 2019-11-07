@@ -24,7 +24,6 @@ class Heights:
             aa = np.zeros((len(facesID),2))
             aa[:,0] = ((n*n).sum(axis=1))**(1/2)
             aa[:,1] = ((n*n).sum(axis=1))**(1/2)
-
             heights = abs((nn*coords_vol).sum(axis=2)+dd)/aa
 
         else:
