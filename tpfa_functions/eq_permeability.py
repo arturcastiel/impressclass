@@ -61,10 +61,12 @@ def get_perm_proj(perms, unit_vectors):
         unit_vectors: vetor normal unitario das faces
     output:
         permeabilidade projetada
+
     '''
 
     tt = np.zeros(perms.shape)
     tt[:, 0, :] = unit_vectors
     tt[:, 1, :] = unit_vectors
     tt[:, 2, :] = unit_vectors
-    return tt.sum(axis=1).sum(axis=1)
+    tt = perms*tt
+    return tt.sum(axis=2).sum(axis=1)

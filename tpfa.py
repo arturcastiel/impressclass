@@ -49,7 +49,7 @@ if __name__ == '__main__':
     # name_mesh = 'mesh/45x45x45.msh'
     dim = 3
     M = msh(name_mesh, dim=dim)
-    M.permeability[:] = [10., 0., 0., 0., 5.0, 0., 0., 0., 2]
+    M.permeability[:] = [10., 0., 0., 0., 5.0, 0., 0., 0., 2.0]
 
     m1 = tpfaScheme(M)
     hi = np.ones([len(M.faces.internal), 2], dtype = np.float64)
