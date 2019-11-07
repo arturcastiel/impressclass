@@ -1,6 +1,7 @@
 import numpy as np
 
 class tpfaScheme(object):
+
     def __init__(self, mesh):
         self.mesh = mesh
         self.hb, self.hi = self.compute_heights()
@@ -19,19 +20,14 @@ class tpfaScheme(object):
         volume_center_coords = self.mesh.volumes.center(M.volumes())
         adjacents_volumes_coords = volume_center_coords[adjacents_volumesID[:,:]]
 
-        face_nodes_coords = self.mesh.nodes.coords[faces_nodesID[:,0]] #one is enough
         normal_vector = self.mesh.faces.normal[facesID]
         normal_vector_modulus = np.linalg.norm(normal_vector,axis=1)
-        d_coefficient = -(normal_vector*face_nodes_coords).sum(axis=1) # from the plane equation (a*x+b*y+c*z+d = 0)
+        face_node_coords = self.mesh.nodes.coords[faces_nodesID[:,0]] #one is enough
+        d_coefficient = -(normal_vector*face_node_coords).sum(axis=1) # from the plane equation (a*x+b*y+c*z+d = 0)
 
-        ''' Reshaping for vectorized calculation
-                normal_vector_reshape: reshaping the normal vector to the same shape as coords_vol
-                d_coefficient_reshape: reshaping the d coefficient vector to the same shape as the hights
-                normal_vector_modulus_reshape: reshaping the normal vector modulus term to the same shape as the hights'''
-
-        normal_vector_reshape = np.ones(adjacents_volumes_coords.shape)*normal_vector[:,np.newaxis,:]
-        d_coefficient_reshape = np.ones(adjacents_volumesID.shape)*d_coefficient[:,np.newaxis]
-        normal_vector_modulus_reshape = np.ones(adjacents_volumesID.shape)*normal_vector_modulus[:,np.newaxis]
+        normal_vector_reshape = normal_vector[:,np.newaxis,:]
+        d_coefficient_reshape = d_coefficient[:,np.newaxis]
+        normal_vector_modulus_reshape = normal_vector_modulus[:,np.newaxis]
 
         heights = abs((normal_vector_reshape*adjacents_volumes_coords).sum(axis=2)+d_coefficient_reshape)/normal_vector_modulus_reshape
         return heights
@@ -39,8 +35,8 @@ class tpfaScheme(object):
     def compute_heights(self):
         internal_facesID = self.mesh.faces.internal[:]
         boundary_facesID = self.mesh.faces.boundary[:]
-        internal_heights = self.getHeights(self,internal_facesID)
-        boundary_heights = self.getHeights(self,boundary_facesID)
+        internal_heights = self.getHeights(internal_facesID)
+        boundary_heights = self.getHeights(boundary_facesID)
         return boundary_heights, internal_heights
 
     def compute_eq_permeability(self):
