@@ -38,7 +38,7 @@ def k_eq(hb, hi, all_faces, internal_faces, b_faces, u_normal, adjacencies_inter
 
     return keq
 
-def get_perm_proj(perms, unit_vectors):
+def get_perm_proj_dep0(perms, unit_vectors):
     '''
     obtem a permeabilidade projetada na face
     input:
@@ -52,3 +52,19 @@ def get_perm_proj(perms, unit_vectors):
     kf1 = (perms[:, 1, :]*unit_vectors).sum(axis=1)
     kf2 = (perms[:, 2, :]*unit_vectors).sum(axis=1)
     return (np.array([kf0, kf1, kf2]).T*unit_vectors).sum(axis=1)
+
+def get_perm_proj(perms, unit_vectors):
+    '''
+    obtem a permeabilidade projetada na face
+    input:
+        perms: permeabilidade dos volumes
+        unit_vectors: vetor normal unitario das faces
+    output:
+        permeabilidade projetada
+    '''
+
+    tt = np.zeros(perms.shape)
+    tt[:, 0, :] = unit_vectors
+    tt[:, 1, :] = unit_vectors
+    tt[:, 2, :] = unit_vectors
+    return tt.sum(axis=1).sum(axis=1)
